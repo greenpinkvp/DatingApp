@@ -21,7 +21,7 @@ namespace DatingApp.API.Controllers
             return Ok(users);
         }
 
-        [HttpGet]
+        [HttpGet("{id:guid}")]
         public ActionResult<AppUser> GetUser(Guid id)
         {
             var user = _context.Users.Find(id);
