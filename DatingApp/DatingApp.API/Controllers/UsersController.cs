@@ -1,12 +1,12 @@
 ﻿using DatingApp.API.Data;
 using DatingApp.API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    //[Authorize]
+    public class UsersController : BaseApiController
     {
         private readonly DataContext _context;
         public UsersController(DataContext context)
@@ -18,7 +18,7 @@ namespace DatingApp.API.Controllers
         public ActionResult<IEnumerable<AppUser>> GetAllUsers()
         {
             var users = _context.Users.ToList();
-            return Ok(users);
+            return users;
         }
 
         [HttpGet("{id:guid}")]
@@ -31,7 +31,7 @@ namespace DatingApp.API.Controllers
                 return NotFound();
             }
 
-            return Ok(user);
+            return user;
         }
     }
 }
