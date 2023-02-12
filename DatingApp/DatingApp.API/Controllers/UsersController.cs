@@ -1,6 +1,5 @@
 ﻿using DatingApp.API.Data;
 using DatingApp.API.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.API.Controllers
@@ -9,6 +8,7 @@ namespace DatingApp.API.Controllers
     public class UsersController : BaseApiController
     {
         private readonly DataContext _context;
+
         public UsersController(DataContext context)
         {
             _context = context;
@@ -26,7 +26,7 @@ namespace DatingApp.API.Controllers
         {
             var user = _context.Users.Find(id);
 
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }

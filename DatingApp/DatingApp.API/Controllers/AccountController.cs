@@ -56,7 +56,7 @@ namespace DatingApp.API.Controllers
 
             if (userExist == null)
             {
-                return NotFound("Username is not exist.");
+                return Unauthorized("Username is not exist.");
             }
 
             using var hmac = new HMACSHA512(userExist.PasswordSalt);
