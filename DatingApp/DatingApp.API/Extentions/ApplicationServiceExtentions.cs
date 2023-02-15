@@ -1,6 +1,9 @@
 ﻿using DatingApp.API.Data;
-using DatingApp.API.Services.IService;
+using DatingApp.API.Helpers;
+using DatingApp.API.Interfaces;
+using DatingApp.API.Repositories;
 using DatingApp.API.Services;
+using DatingApp.API.Services.IService;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Extentions
@@ -17,6 +20,8 @@ namespace DatingApp.API.Extentions
 
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             return services;
         }

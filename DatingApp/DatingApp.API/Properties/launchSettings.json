@@ -10,6 +10,16 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+
+    "Watch": {
+      "executablePath": "D:\\.NetCore\\Project\\DatingApp\\DatingApp\\DatingApp.API\\bin\\Debug\\net6.0\\DatingApp.API.exe",
+      "commandLineArgs": "watch run",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:7061",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }
