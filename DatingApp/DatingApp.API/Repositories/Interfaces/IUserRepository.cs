@@ -11,7 +11,7 @@ namespace DatingApp.API.Interfaces
 
         Task<AppUser> GetUserByIdAsync(Guid id);
 
-        Task<AppUser> GetUserByNameAsync(string username);
+        Task<AppUser> GetUserByUsernameAsync(string username);
 
         Task<IEnumerable<MemberDto>> GetMembersAsync();
 
