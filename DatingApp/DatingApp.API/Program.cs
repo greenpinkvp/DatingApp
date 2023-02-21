@@ -15,6 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
+//builder.Services.AddCors(options => options.AddPolicy("AllowAll", builder => builder.AllowCredentials()));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,6 +36,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//app.UseCors("AllowAll");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;

@@ -52,7 +52,7 @@ namespace DatingApp.API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto userLogin)
         {
-            var userExist = await _context.Users.FirstOrDefaultAsync(x => x.Username == userLogin.Username.ToLower());
+            var userExist = await _context.Users.Include(x=>x.Photos).FirstOrDefaultAsync(x => x.Username == userLogin.Username.ToLower());
 
             if (userExist == null)
             {
@@ -67,15 +67,16 @@ namespace DatingApp.API.Controllers
             {
                 if (computedHash[i] != userExist.PasswordHash[i])
                 {
-                    return BadRequest("Password is wrong");
+                    return Unauthorized("Invalid password");
                 }
             }
 
             return new UserDto()
             {
                 Username = userExist.Username,
-                Token = _tokenService.CreateToken(userExist)
-            }; ;
+                Token = _tokenService.CreateToken(userExist),
+                PhotoUrl = userExist.Photos.FirstOrDefault(x => x.IsMain)?.Url
+            };
         }
 
         private async Task<bool> UserExist(string username)
