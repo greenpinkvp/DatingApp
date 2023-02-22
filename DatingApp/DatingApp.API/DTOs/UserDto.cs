@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace DatingApp.API.DTOs
+﻿namespace DatingApp.API.DTOs
 {
     public class UserDto
     {
@@ -9,5 +7,7 @@ namespace DatingApp.API.DTOs
         public string Token { get; set; }
 
         public string PhotoUrl { get; set; }
+
+        public string KnownAs { get; set; }
     }
 }

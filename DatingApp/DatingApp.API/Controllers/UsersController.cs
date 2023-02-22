@@ -197,7 +197,7 @@ namespace DatingApp.API.Controllers
                 return Ok();
             }
 
-            return BadRequest("Problem deleting photo");
+            return BadRequest("Problem deleting- photo");
         }
     }
 }
