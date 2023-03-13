@@ -9,9 +9,9 @@ namespace DatingApp.API.Extentions
             return user.FindFirst(ClaimTypes.Name)?.Value;
         }
 
-        public static string GetUserId(this ClaimsPrincipal user)
+        public static Guid GetUserId(this ClaimsPrincipal user)
         {
-            return user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return new Guid(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         }
     }
 }

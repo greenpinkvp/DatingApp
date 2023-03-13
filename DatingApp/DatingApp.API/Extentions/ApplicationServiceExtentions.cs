@@ -2,6 +2,7 @@
 using DatingApp.API.Helpers;
 using DatingApp.API.Interfaces;
 using DatingApp.API.Repositories;
+using DatingApp.API.Repositories.Interfaces;
 using DatingApp.API.Services;
 using DatingApp.API.Services.IService;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace DatingApp.API.Extentions
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<LogUserActivity>();
+            services.AddScoped<ILikesRepository, LikesRepository>();
 
             return services;
         }
