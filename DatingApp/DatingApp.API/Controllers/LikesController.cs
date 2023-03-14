@@ -64,12 +64,12 @@ namespace DatingApp.API.Controllers
         {
             likeParams.UserId = User.GetUserId();
 
-            var user = await _likeRepo.GetUserLikes(likeParams);
+            var users = await _likeRepo.GetUserLikes(likeParams);
 
-            Response.AddPaginationHeader(new PaginationHeader(user.CurrentPage, user.PageSize, 
-                user.TotalCount, user.TotalPages));
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, 
+                users.TotalCount, users.TotalPages));
 
-            return Ok(user);
+            return Ok(users);
         }
     }
 }
