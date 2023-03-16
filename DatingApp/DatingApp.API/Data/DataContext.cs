@@ -1,10 +1,14 @@
 ﻿using DatingApp.API.Converts;
 using DatingApp.API.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<AppUser, AppRole, Guid,
+        IdentityUserClaim<Guid>, AppUserRole, IdentityUserLogin<Guid>,
+        IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -22,6 +26,19 @@ namespace DatingApp.API.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            //user role
+            builder.Entity<AppUser>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.User)
+                .HasForeignKey(u => u.UserId)
+                .IsRequired();
+
+            builder.Entity<AppRole>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.Role)
+                .HasForeignKey(u => u.RoleId)
+                .IsRequired();
 
             //like
             builder.Entity<UserLike>()
@@ -51,7 +68,6 @@ namespace DatingApp.API.Data
                 .OnDelete(DeleteBehavior.NoAction);
         }
 
-        public DbSet<AppUser> Users { get; set; }
         public DbSet<UserLike> Likes { get; set; }
         public DbSet<Message> Messages { get; set; }
     }

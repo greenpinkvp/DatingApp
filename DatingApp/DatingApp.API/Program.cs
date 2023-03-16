@@ -1,6 +1,8 @@
 using DatingApp.API.Data;
+using DatingApp.API.Entities;
 using DatingApp.API.Extentions;
 using DatingApp.API.Middlewares;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,8 +47,10 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
     await context.Database.MigrateAsync();
-    await SeedData.SeedUsers(context);
+    await SeedData.SeedUsers(userManager, roleManager);
 }
 catch (Exception ex)
 {

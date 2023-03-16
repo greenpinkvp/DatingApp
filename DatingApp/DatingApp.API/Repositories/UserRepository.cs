@@ -20,9 +20,9 @@ namespace DatingApp.API.Repositories
             _mapper = mapper;
         }
 
-        public async Task<MemberDto> GetMemberByUsernameAsync(string username)
+        public async Task<MemberDto> GetMemberByUserNameAsync(string userName)
         {
-            return await _context.Users.Where(x => x.Username == username)
+            return await _context.Users.Where(x => x.UserName == userName)
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider).SingleOrDefaultAsync();
         }
 
@@ -30,7 +30,7 @@ namespace DatingApp.API.Repositories
         {
             var query = _context.Users.AsQueryable();
 
-            query = query.Where(u => u.Username != userParams.CurrentUsername);
+            query = query.Where(u => u.UserName != userParams.CurrentUserName);
             query = query.Where(u => u.Gender == userParams.Gender);
 
             var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
@@ -53,9 +53,9 @@ namespace DatingApp.API.Repositories
             return await _context.Users.FindAsync(id);
         }
 
-        public async Task<AppUser> GetUserByUsernameAsync(string username)
+        public async Task<AppUser> GetUserByUserNameAsync(string userName)
         {
-            return await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Username == username);
+            return await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.UserName == userName);
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersAsync()

@@ -12,11 +12,11 @@ namespace DatingApp.API.Interfaces
 
         Task<AppUser> GetUserByIdAsync(Guid id);
 
-        Task<AppUser> GetUserByUsernameAsync(string username);
+        Task<AppUser> GetUserByUserNameAsync(string userName);
 
         Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
 
-        Task<MemberDto> GetMemberByUsernameAsync(string username);
+        Task<MemberDto> GetMemberByUserNameAsync(string userName);
 
         Task<bool> SaveAsync();
     }

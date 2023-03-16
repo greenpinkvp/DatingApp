@@ -19,11 +19,11 @@ namespace DatingApp.API.Controllers
             _likeRepo = likeRepo;
         }
 
-        [HttpPost("{username}")]
-        public async Task<ActionResult> AddLike(string username)
+        [HttpPost("{userName}")]
+        public async Task<ActionResult> AddLike(string userName)
         {
             var sourceId = User.GetUserId();
-            var likeUser = await _userRepo.GetUserByUsernameAsync(username);
+            var likeUser = await _userRepo.GetUserByUserNameAsync(userName);
             var sourceUser = await _likeRepo.GetUserWithLikes(sourceId);
 
             if (likeUser == null)
@@ -31,7 +31,7 @@ namespace DatingApp.API.Controllers
                 return NotFound();
             }
 
-            if (sourceUser.Username == username)
+            if (sourceUser.UserName == userName)
             {
                 return BadRequest("You cannot like yourself");
             }

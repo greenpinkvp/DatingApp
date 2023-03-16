@@ -4,7 +4,7 @@ namespace DatingApp.API.Extentions
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static string GetUsername(this ClaimsPrincipal user)
+        public static string GetUserName(this ClaimsPrincipal user)
         {
             return user.FindFirst(ClaimTypes.Name)?.Value;
         }
