@@ -18,6 +18,6 @@ namespace DatingApp.API.Interfaces
 
         Task<MemberDto> GetMemberByUserNameAsync(string userName);
 
-        Task<bool> SaveAsync();
+        Task<string> GetUserGender(string userName);
     }
 }

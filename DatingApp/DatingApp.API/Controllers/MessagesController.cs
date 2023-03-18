@@ -3,7 +3,6 @@ using DatingApp.API.DTOs;
 using DatingApp.API.Entities;
 using DatingApp.API.Extentions;
 using DatingApp.API.Helpers;
-using DatingApp.API.Interfaces;
 using DatingApp.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,14 +10,12 @@ namespace DatingApp.API.Controllers
 {
     public class MessagesController : BaseApiController
     {
-        private readonly IUserRepository _userRepos;
-        private readonly IMessageRepository _messageRepos;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public MessagesController(IUserRepository userRepos, IMessageRepository messageRepos, IMapper mapper)
+        public MessagesController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _userRepos = userRepos;
-            _messageRepos = messageRepos;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -31,8 +28,8 @@ namespace DatingApp.API.Controllers
                 return BadRequest("You can not send messages to yourself");
             }
 
-            var sender = await _userRepos.GetUserByUserNameAsync(userName);
-            var recipient = await _userRepos.GetUserByUserNameAsync(createMessageDto.RecipientUserName);
+            var sender = await _unitOfWork.UserRepository.GetUserByUserNameAsync(userName);
+            var recipient = await _unitOfWork.UserRepository.GetUserByUserNameAsync(createMessageDto.RecipientUserName);
 
             if (recipient == null)
             {
@@ -48,9 +45,9 @@ namespace DatingApp.API.Controllers
                 Content = createMessageDto.Content
             };
 
-            _messageRepos.AddMessage(message);
+            _unitOfWork.MessageRepository.AddMessage(message);
 
-            if (await _messageRepos.SaveAllAsync())
+            if (await _unitOfWork.Complete())
             {
                 return Ok(_mapper.Map<MessageDto>(message));
             }
@@ -62,26 +59,26 @@ namespace DatingApp.API.Controllers
         public async Task<ActionResult<PagedList<MessageDto>>> GetMessagesForUser([FromQuery] MessageParams messageParams)
         {
             messageParams.UserName = User.GetUserName();
-            var messages = await _messageRepos.GetMessagesForUser(messageParams);
+            var messages = await _unitOfWork.MessageRepository.GetMessagesForUser(messageParams);
 
             Response.AddPaginationHeader(new PaginationHeader(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages));
 
             return messages;
         }
 
-        [HttpGet("thread/{userName}")]
-        public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessageThread(string userName)
-        {
-            var currentUserName = User.GetUserName();
+        //[HttpGet("thread/{userName}")]
+        //public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessageThread(string userName)
+        //{
+        //    var currentUserName = User.GetUserName();
 
-            return Ok(await _messageRepos.GetMessageThread(currentUserName, userName));
-        }
+        //    return Ok(await _unitOfWork.MessageRepository.GetMessageThread(currentUserName, userName));
+        //}
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMessage(Guid id)
         {
             var userName = User.GetUserName();
-            var message = await _messageRepos.GetMessage(id);
+            var message = await _unitOfWork.MessageRepository.GetMessage(id);
 
             if (message.SenderUserName != userName && message.RecipientUserName != userName)
             {
@@ -98,18 +95,17 @@ namespace DatingApp.API.Controllers
                 message.RecipientDeleted = true;
             }
 
-            if(message.SenderDeleted && message.RecipientDeleted)
+            if (message.SenderDeleted && message.RecipientDeleted)
             {
-                _messageRepos.DeleteMessage(message);
+                _unitOfWork.MessageRepository.DeleteMessage(message);
             }
 
-            if(await _messageRepos.SaveAllAsync())
+            if (await _unitOfWork.Complete())
             {
                 return Ok();
             }
 
             return BadRequest("Problem deleting this message");
         }
-
     }
 }

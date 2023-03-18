@@ -2,7 +2,6 @@
 using DatingApp.API.Entities;
 using DatingApp.API.Extentions;
 using DatingApp.API.Helpers;
-using DatingApp.API.Interfaces;
 using DatingApp.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,21 +9,19 @@ namespace DatingApp.API.Controllers
 {
     public class LikesController : BaseApiController
     {
-        private readonly IUserRepository _userRepo;
-        private readonly ILikesRepository _likeRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public LikesController(IUserRepository userRepo, ILikesRepository likeRepo)
+        public LikesController(IUnitOfWork unitOfWork)
         {
-            _userRepo = userRepo;
-            _likeRepo = likeRepo;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost("{userName}")]
         public async Task<ActionResult> AddLike(string userName)
         {
             var sourceId = User.GetUserId();
-            var likeUser = await _userRepo.GetUserByUserNameAsync(userName);
-            var sourceUser = await _likeRepo.GetUserWithLikes(sourceId);
+            var likeUser = await _unitOfWork.UserRepository.GetUserByUserNameAsync(userName);
+            var sourceUser = await _unitOfWork.LikesRepository.GetUserWithLikes(sourceId);
 
             if (likeUser == null)
             {
@@ -36,7 +33,7 @@ namespace DatingApp.API.Controllers
                 return BadRequest("You cannot like yourself");
             }
 
-            var userLike = await _likeRepo.GetUserLike(sourceId, likeUser.Id);
+            var userLike = await _unitOfWork.LikesRepository.GetUserLike(sourceId, likeUser.Id);
 
             if (userLike != null)
             {
@@ -51,7 +48,7 @@ namespace DatingApp.API.Controllers
 
             sourceUser.LikedUsers.Add(userLike);
 
-            if (await _userRepo.SaveAsync())
+            if (await _unitOfWork.Complete())
             {
                 return Ok();
             }
@@ -64,9 +61,9 @@ namespace DatingApp.API.Controllers
         {
             likeParams.UserId = User.GetUserId();
 
-            var users = await _likeRepo.GetUserLikes(likeParams);
+            var users = await _unitOfWork.LikesRepository.GetUserLikes(likeParams);
 
-            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, 
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize,
                 users.TotalCount, users.TotalPages));
 
             return Ok(users);
