@@ -82,12 +82,12 @@ namespace DatingApp.API.Repositories
         {
             var query = _context.Messages
                 .Where(
-                    m => m.RecipientUserName == currentUserName &&
+                    m => (m.RecipientUserName == currentUserName &&
                     m.RecipientDeleted == false &&
-                    m.SenderUserName == recipientUserName ||
-                    m.RecipientUserName == recipientUserName &&
+                    m.SenderUserName == recipientUserName) ||
+                    (m.RecipientUserName == recipientUserName &&
                     m.SenderDeleted == false &&
-                    m.SenderUserName == currentUserName
+                    m.SenderUserName == currentUserName)
                 ).OrderBy(m => m.MessageSent)
                 .AsQueryable();
 
@@ -97,7 +97,7 @@ namespace DatingApp.API.Repositories
             {
                 foreach (var message in unreadMessages)
                 {
-                    message.DateRead = DateTime.Now;
+                    message.DateRead = DateTime.UtcNow;
                 }
             }
 

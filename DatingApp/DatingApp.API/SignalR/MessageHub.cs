@@ -109,7 +109,7 @@ namespace DatingApp.API.SignalR
             }
         }
 
-        private string GetGroupName(string caller, string other)
+        private static string GetGroupName(string caller, string other)
         {
             var stringCompare = string.CompareOrdinal(caller, other) < 0;
 

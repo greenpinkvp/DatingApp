@@ -66,10 +66,13 @@ namespace DatingApp.API.Data
                 .HasOne(s => s.Sender)
                 .WithMany(l => l.MessagesSent)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Photo>().HasQueryFilter(p => p.IsApproved);
         }
 
         public DbSet<UserLike> Likes { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Photo> Photos { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Connection> Connections { get; set; }
     }

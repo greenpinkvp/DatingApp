@@ -26,7 +26,7 @@ namespace DatingApp.API.Controllers
 
         [Authorize(Roles = "Administrator, Member")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllUsers([FromQuery] UserParams userParams)
+        public async Task<ActionResult<PagedList<MemberDto>>> GetAllUsers([FromQuery] UserParams userParams)
         {
             var gender = await _unitOfWork.UserRepository.GetUserGender(User.GetUserName());
             userParams.CurrentUserName = User.GetUserName();
@@ -62,14 +62,9 @@ namespace DatingApp.API.Controllers
         [HttpGet("{userName}")]
         public async Task<ActionResult<MemberDto>> GetUserByUserNameAsync(string userName)
         {
-            var user = await _unitOfWork.UserRepository.GetMemberByUserNameAsync(userName);
+            var currentUser = User.GetUserName();
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
+            return await _unitOfWork.UserRepository.GetMemberByUserNameAsync(userName, currentUser == userName);
         }
 
         [HttpPut]
@@ -114,11 +109,6 @@ namespace DatingApp.API.Controllers
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId,
             };
-
-            if (user.Photos.Count == 0)
-            {
-                photo.IsMain = true;
-            }
 
             user.Photos.Add(photo);
 
@@ -182,7 +172,7 @@ namespace DatingApp.API.Controllers
                 return NotFound();
             }
 
-            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photo = await _unitOfWork.PhotoRepository.GetPhotoById(photoId);
 
             if (photo == null)
             {
