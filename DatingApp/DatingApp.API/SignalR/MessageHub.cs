@@ -105,7 +105,7 @@ namespace DatingApp.API.SignalR
 
             if (await _unitOfWork.Complete())
             {
-                await Clients.Group(groupName).SendAsync("NewMessages", _mapper.Map<MessageDto>(message));
+                await Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
             }
         }
 

@@ -2,22 +2,23 @@
 {
     public class PresenceTracker
     {
+        //key: userName, value: connectionId: list vi co the dang nhap tu nhieu thiet bi
         private static readonly Dictionary<string, List<string>> OnlineUsers =
             new Dictionary<string, List<string>>();
 
-        public Task<bool> UserConnected(string username, string connectionId)
+        public Task<bool> UserConnected(string userName, string connectionId)
         {
             bool isOnline = false;
 
             lock (OnlineUsers)
             {
-                if (OnlineUsers.ContainsKey(username))
+                if (OnlineUsers.ContainsKey(userName))
                 {
-                    OnlineUsers[username].Add(connectionId);
+                    OnlineUsers[userName].Add(connectionId);
                 }
                 else
                 {
-                    OnlineUsers.Add(username, new List<string> { connectionId });
+                    OnlineUsers.Add(userName, new List<string> { connectionId });
                     isOnline = true;
                 }
             }

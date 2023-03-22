@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace DatingApp.API.SignalR
 {
     [Authorize]
-    public class PresenceHub : Hub
+    public class PresenceHub : Hub //Hub:func của SignalR
     {
         private readonly PresenceTracker _tracker;
 
@@ -23,7 +23,7 @@ namespace DatingApp.API.SignalR
             }
 
             var currentUsers = await _tracker.GetOnlineUsers();
-            await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+            await Clients.Caller.SendAsync("GetOnlineUsers", currentUsers);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
